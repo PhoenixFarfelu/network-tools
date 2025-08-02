@@ -4,7 +4,7 @@ set -e
 REPO_BASE="https://raw.githubusercontent.com/PhoenixFarfelu/network-tools/main"
 INSTALL_DIR="/usr/local/bin"
 #TOOLS=("sapache2" "skea" "snamed")
-TOOLS=("sapache2")
+TOOLS=("sapache2" "skea")
 
 echo "[*] Installation des outils de déploiement réseau..."
 
