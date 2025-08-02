@@ -10,7 +10,7 @@ echo "[*] Installation des outils de déploiement réseau..."
 
 for tool in "${TOOLS[@]}"; do
   echo "  ↪ Téléchargement de $tool..."
-  curl -sSL "$REPO_BASE/$tool.bat" -o "$tool"
+  curl -sSL "$REPO_BASE/$tool.sh" -o "$tool"
   chmod +x "$tool"
   echo "  ↪ Installation dans $INSTALL_DIR..."
   sudo mv "$tool" "$INSTALL_DIR/$tool"
