@@ -2,6 +2,21 @@
 # Valeurs par defaut des variables
 expert=false
 
+# Fonction de validation d'adresse IPv4
+is_valid_ip() {
+    [[ "$1" =~ ^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$ ]]
+}
+
+# Validation d'une adresse réseau (IPv4/masque)
+is_valid_network() {
+    [[ "$1" =~ ^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])/(3[0-2]|[12]?[0-9])$ ]]
+}
+
+# Validation d'une adresse MAC (en minuscule pour kea)
+is_valid_mac() {
+    [[ "$1" =~ ^([0-9a-f]{2}:){5}[0-9a-f]{2}$ ]]
+}
+
 # Analyse du premier argument
 case "$1" in
 "-e" | "--expert")
@@ -23,6 +38,9 @@ case "$1" in
         if [[ -z "$lifetime" ]]; then
             lifetime="691200"
         fi
+    else
+        interface="eth0"
+        lifetime="691200"
     fi
 
     # Configuration generale
@@ -49,9 +67,26 @@ case "$1" in
     done=false
     until $done; do
         # Configuration du subnet
+        # Recuperation subnet valide (sans verification de masque)
         read -p "Subnet à definir (X.X.X.X/XX) : " subnet
+        until is_valid_network "$subnet"; do
+            echo "Adresse réseau incorrecte, veuillez réessayer"
+            read -p "Subnet à definir (X.X.X.X/XX) : " subnet
+        done
+
+        # Recuperation de la pool (debut + fin)
         read -p "Début de la pool (X.X.X.X) : " poolStart
+        until is_valid_ip "$poolStart"; do
+            echo "Adresse IP incorrecte, veuillez réessayer"
+            read -p "Début de la pool (X.X.X.X) : " poolStart
+        done
         read -p "Fin de la pool (X.X.X.X) : " poolEnd
+        until is_valid_ip "$poolEnd"; do
+            echo "Adresse IP incorrecte, veuillez réessayer"
+            read -p "Fin de la pool (X.X.X.X) : " poolEnd
+        done
+
+        # Construction du subnet
         echo "
             {
                 \"subnet\": \"${subnet}\",
@@ -72,7 +107,7 @@ case "$1" in
                 }" >> /etc/kea/kea-dhcp4.conf
         fi
 
-        # Ajout router
+        # Ajout router par defaut
         read -p "Ajout de router par défaut ? [N/X.X.X.X] " router
         if [[ -n "$router" && ! "$router" =~ ^([nN][oO]|[nN])$ ]]; then
             echo ",
@@ -93,8 +128,16 @@ case "$1" in
                     # Recuperation des variables
                     read -p "Nom de l'appareil (hostname)" name
                     read -p "Adresse MAC : " macAddr
+                    until is_valid_mac "$macAddr"; do
+                        echo "Adresse MAC incorrecte, veuillez réessayer"
+                        read -p "Adresse MAC : " macAddr
+                    done
                     read -p "Adresse IP associée : " ipAddr
-
+                    until is_valid_ip "$ipAddr"; do
+                        echo "Adresse IP incorrecte, veuillez réessayer"
+                        read -p "Adresse IP associée : " ipAddr
+                    done
+                    
                     # Ajout de la reservation d'adresse
                     echo ",
                         \"reservations\": [

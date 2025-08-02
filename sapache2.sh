@@ -104,11 +104,13 @@ case "$1" in
 
     # Redemarrage du serveur
     systemctl restart apache2
+        
+    # Affichage du status d'Apache
+    systemctl status apache2
     ;;
 esac
 
-# Affichage du status d'Apache
-systemctl status apache2
+
 
 # Mise en place des noms de domaines
 #echo "www.site1 CNAME serveur" >> /etc/bind/db.mon.lan
