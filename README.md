@@ -1,6 +1,7 @@
 # Description
 __network-tool__ est mon toolkit personnel de scripts d'automatisation de déploiement de services réseaux.
-pour télécharger et directement installer les outils :
+
+Pour télécharger et directement installer les outils :
 - `curl https://raw.githubusercontent.com/PhoenixFarfelu/network-tools/main/install.sh | bash`
 
 # Important
