@@ -13,7 +13,7 @@ for tool in "${TOOLS[@]}"; do
   curl -sSL "$REPO_BASE/$tool.sh" -o "$tool"
   chmod +x "$tool"
   echo "  ↪ Installation dans $INSTALL_DIR..."
-  sudo mv "$tool" "$INSTALL_DIR/$tool"
+  mv "$tool" "$INSTALL_DIR/$tool"
 done
 
 echo "[✔] Tous les outils ont été installés avec succès."
