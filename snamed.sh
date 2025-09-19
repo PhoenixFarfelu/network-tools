@@ -45,7 +45,7 @@ case "$1" in
         echo "Adresse IP incorrecte, veuillez réessayer"
         read -p "DNS en charde des requetes [129.20.211.22/X.X.X.X] " forwarders
         if [[ -z "$forwarders" ]]; then
-            forwarders="129.20.211.22;"
+            forwarders="129.20.211.22"
         fi
     done
 
@@ -55,7 +55,7 @@ case "$1" in
         allow-query { any; }; 
         forward first; 
         forwarders { 
-            ${forwarders}
+            ${forwarders};
         }; 
     };" > /etc/bind/named.conf.options
 
