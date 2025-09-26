@@ -45,7 +45,7 @@ case "$1" in
         echo "Adresse IP incorrecte, veuillez réessayer"
         read -p "DNS en charde des requetes [129.20.211.22/X.X.X.X] " forwarders
         if [[ -z "$forwarders" ]]; then
-            forwarders="129.20.211.22"
+            forwarders="129.20.211.22;"
         fi
     done
 
@@ -55,7 +55,7 @@ case "$1" in
         allow-query { any; }; 
         forward first; 
         forwarders { 
-            ${forwarders};
+            ${forwarders}
         }; 
     };" > /etc/bind/named.conf.options
 
@@ -91,15 +91,16 @@ case "$1" in
 
             # Creation du fichier de domaine (db.XXX.XXX)
             touch "/etc/bind/db.$domainName"
-            echo "\$TTL 3h
-            @ IN SOA ns.$domainName. mailaddress.$domainName. (
-            2025051901
-            6H
-            1H
-            5D
-            1D )
-            @ IN NS ns.$domainName.
-            @ IN MX 10 mail.$domainName." > "/etc/bind/db.$domainName"
+            echo "
+\$TTL 3h
+@ IN SOA ns.$domainName. mailaddress.$domainName. (
+        2025051901
+        6H
+        1H
+        5D
+        1D )
+    @ IN NS ns.$domainName.
+    @ IN MX 10 mail.$domainName." > "/etc/bind/db.$domainName"
             until is_valid_ip "$ns"; do
                 read -p " Adresse ip du server [X.X.X.X] : " ns
             done
@@ -129,7 +130,7 @@ case "$1" in
     fi
 
     # Redemarrage du server
-    systemctl restart bind9
+    sudo systemctl restart bind9
 
     # Le server deviens son propre DNS
     echo "nameserver 127.0.0.1" > /etc/resolv.conf
