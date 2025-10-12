@@ -130,7 +130,7 @@ case "$1" in
     fi
 
     # Redemarrage du server
-    sudo systemctl restart bind9
+    systemctl restart bind9
 
     # Le server deviens son propre DNS
     echo "nameserver 127.0.0.1" > /etc/resolv.conf
