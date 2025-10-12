@@ -15,7 +15,7 @@ case "$1" in
     expert=true
     ;;&
 "-r" | "--remove")
-    # Desinstallation d'Apache2
+    # Desinstallation de bind9
     apt remove --purge bind9 -y
     read -p "Choix du nouveau DNS [129.20.211.22/X.X.X.X] " dns 
     if [[ -z "$dns" ]]; then
